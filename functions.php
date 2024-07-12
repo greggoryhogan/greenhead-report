@@ -412,7 +412,7 @@ function build_embed_code() {
         $width = '100%';
         $height = '200';
     }
-    $html = '<iframe id="greenhead-report" src="'.trailingslashit(get_bloginfo('url')).'iframe/?location='.urlencode(implode(',',$locations)).'&size='.$size.'" width="'.$width.'" height="'.$height.'" style="border: none;"></iframe>'; //&fields='.urlencode(implode(',',$fields)).'
+    $html = '<iframe id="greenhead-report" class="'.$size.'" src="'.trailingslashit(get_bloginfo('url')).'iframe/?location='.urlencode(implode(',',$locations)).'&size='.$size.'" width="'.$width.'" height="'.$height.'" style="border: none;"></iframe>'; //&fields='.urlencode(implode(',',$fields)).'
     $embed = '<script src="https://greenheadreport.com/embed.js?ver=1.0" data-locations="'.implode(',',$locations).'" data-size="'.$size.'"></script><div id="greenhead-report"></div>';
     $message = 'Code generated! Locations: '.implode(', ', $locations).'. Size: '.$size;
     wp_mail('hello@mynameisgregg.com','Greenhead code generated', $message);

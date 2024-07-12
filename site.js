@@ -12,6 +12,21 @@
             }
         }); 
 
+        function resize_embed() {
+            
+            if($('#greenhead-report').length) {
+                if($('#greenhead-report').hasClass('full_width')) {
+                    var windowWidth = parseInt($(document).width());    
+                    
+                    if(windowWidth >= 768) {
+                        $('#greenhead-report').css('height','200px');
+                    } else {
+                        $('#greenhead-report').css('height','400px');
+                    }
+                }
+            }
+        }
+
         $(document).on('submit','.embed-builder', function(e) {
             e.preventDefault();
             var locations = [];
@@ -47,8 +62,13 @@
                 success: function(response){
                     $('#embed-code').html(response.preview);
                     $('#embed-code').append(response.html);
+                    resize_embed();
                 }
             }); 
+        });
+
+        $(window).on('resize', function() {
+            resize_embed();
         });
 
         $(document).on('click','#copy-embed-code', function(e){
