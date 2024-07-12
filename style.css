@@ -1,0 +1,397 @@
+/*
+Theme Name: Greenhead
+Author: Gregg Hogan
+Author URI: https://mynameisgregg.com
+Description: Henry - The ever evolving Wordpress theme.
+License: GNU General Public License version 3.0
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
+Version: 7.0.3
+*/
+html,body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient( 168.2deg,  rgba(44,207,156,1) 19.3%, rgba(18,235,167,1) 67.5% );
+    background-image: radial-gradient( circle farthest-corner at -4% -12.9%,  rgba(74,98,110,1) 0.3%, rgba(30,33,48,1) 90.2% );
+    background: #9dc183;
+    color: #fff;
+    font-size: 24px;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+.container {
+    position: relative;
+    min-height: 90vh;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 50px;
+}
+.container-content {
+    position: relative;
+    text-align: center;
+    padding: 20px;
+}
+.answer{
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.answer.inline {
+  display: inline; font-size: 1em;
+}
+/* TOGGLE STYLING */
+ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+span.gfield_required {
+    display: none!important;
+}
+#gform_wrapper_1,
+#gform_confirmation_message_1 {
+    margin-top: 50px;
+    padding-bottom: 50px;
+}
+#gform_1 ul {
+    margin-top: 20px;
+}
+#gform_1 ul.gfield_radio {
+    margin: 1.5rem 0;
+    box-sizing: border-box;
+    font-size: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: stretch;
+  }
+  #gform_1 .ginput_container_radio .gfield_radio input {
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: -9999px;
+  }
+  #gform_1 .ginput_container_radio .gfield_radio input + label {
+    margin: 0;
+    padding: .75rem 2rem;
+    box-sizing: border-box;
+    position: relative;
+    display: inline-block;
+    border: solid 1px #DDD;
+    background-color: #FFF;
+    color: #1c701c;
+    font-size: 1rem;
+    line-height: 140%;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    transition: border-color .15s ease-out,  color .25s ease-out,  background-color .15s ease-out, box-shadow .15s ease-out;
+    /* ADD THESE PROPERTIES TO SWITCH FROM AUTO WIDTH TO FULL WIDTH */
+    /*flex: 0 0 50%; display: flex; justify-content: center; align-items: center;*/
+    width: 100%;
+    /* ----- */
+  }
+  #gform_1 .gchoice_1_1_0 label:first-of-type {
+    border-radius: 6px 0 0 6px;
+    border-right: none;
+  }
+  #gform_1 .gchoice_1_1_1 label:last-of-type {
+    border-radius: 0 6px 6px 0;
+    border-left: none;
+  }
+  #gform_1 .ginput_container_radio .gfield_radio input:hover + label {
+    border-color: #213140;
+  }
+  #gform_1 .ginput_container_radio .gfield_radio input:checked + label {
+    background-color: #444c37;
+    color: #FFF;
+    box-shadow: none;
+    border-color: #1c701c;
+    z-index: 1;
+  }
+  #gform_1 .ginput_container_radio .gfield_radio input:focus + label {
+    outline: dotted 1px #CCC;
+    outline-offset: .45rem;
+  }
+  .gform_button.button,.gform_next_button.button,.gform_previous_button.button,input[type="submit"],
+  .btn {
+    padding: .2rem 1.5rem;
+    box-sizing: border-box;
+    position: relative;
+    border: none;
+    display: inline-block;
+    background-color: #FFF;
+    color: #1c701c;
+    font-size: .9rem;
+    line-height: 140%;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    transition: border-color .15s ease-out,  color .25s ease-out,  background-color .15s ease-out, box-shadow .15s ease-out;
+    /* ADD THESE PROPERTIES TO SWITCH FROM AUTO WIDTH TO FULL WIDTH */
+    /*flex: 0 0 50%; display: flex; justify-content: center; align-items: center;*/
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+  .gform_button.button:hover,.gform_next_button.button:hover,.gform_previous_button.button:hover,input[type="submit"]:hover,
+  .btn:hover {
+    color: #FFF;
+    background-color: #1c701c;
+  }
+  .gfield_select {
+    display: block;
+    font-size: 16px;
+    font-family: sans-serif;
+    font-weight: 700;
+    color: #444c37;
+    line-height: 1.3;
+    padding: .6em 1.4em .5em .8em;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    border: 1px solid #aaa;
+    box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
+    border-radius: .5em;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
+      linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%);
+    background-repeat: no-repeat, repeat;
+    background-position: right .7em top 50%, 0 0;
+    background-size: .65em auto, 100%;
+    margin: 15px auto;
+  }
+  #input_1_6 {
+    margin-bottom: 1.5rem;
+  }
+  .gfield_select::-ms-expand {
+    display: none;
+  }
+  .gfield_select:hover {
+    border-color: #444c37;
+  }
+  .gfield_select:focus {
+    border-color: #aaa;
+    box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+    box-shadow: 0 0 0 3px -moz-mac-focusring;
+    color: #222;
+    outline: none;
+  }
+  .gfield_select option {
+    font-weight:normal;
+  }
+  #gform_page_1_2 .gfield_label {
+    display: none;
+  }
+  .columns {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: stretch;
+    padding-top: 30px;
+  }
+  .column {
+    flex: 0 0 50%;
+    box-sizing: border-box;
+    padding: 0 30px;
+  }
+  h2.line,
+  h1.line {
+    width: 80%;
+    text-align: center;
+    border-bottom: 1px solid #fff;
+    line-height: 0.1em;
+    margin: 20px auto 20px auto;
+  }
+  h2 span,
+  h1 span { 
+    background:#9dc183; 
+      padding:0 10px; 
+  }
+  h2 div {
+    display: inline-block;
+  }
+  #input_2_1 {
+    margin: 20px 0;
+    font-size: 24px;
+    max-width: 100%;
+  }
+  #gform_2_validation_container h2 {
+    display: none!important;
+  }
+  #validation_message_2_1 {
+    font-style: italic;
+    font-weight: 200 !important;
+    margin-bottom: 20px;
+  }
+  .gform_ajax_spinner {
+    display: block;
+    margin: 15px auto 0 auto;
+    filter: brightness(75%) !important;
+  }
+  @media all and (max-width: 767px) {
+      .answer.spacer {
+        display: none;
+      }
+      h1 {
+          font-size: 1.3rem;
+      }
+      .container {
+          padding-top: 1vh;
+      }
+      .columns {
+        display: block;
+        padding-top: 0px;
+      }
+      .column {
+        padding-bottom: 30px;
+      }
+      h2.line {
+        width: 100%;
+        margin: 20px 0 30px 0;
+      }
+      h2 div {
+        display: none;
+      }
+  }
+  a, a:visited, a:active {
+    color: #fff;
+    transition: .2s all;
+  }
+  a:hover {
+    color: #1c701c;
+  }
+  .logo-container a {
+    text-decoration: none;
+  }
+  .logo-container a:hover {
+    color: #fff;
+  }
+  .greenheadlogo {
+    width: auto;
+    height: 70px;
+    padding: 10px 0;
+    margin-bottom: -20px;
+    transition: .2s all;
+  }
+  .logo-container a:hover .greenheadlogo {
+    height: 80px;
+    padding: 5px 0;
+  }
+  .copy {
+    margin-top: 100px;
+    font-size: 16px;
+  }
+  
+  @media (min-width: 768px) {
+    .gh-report {
+      display: grid;
+      grid-template-columns: 35fr 18fr 8fr 35fr 15fr;
+      text-align: left;
+      gap: 10px;
+    }
+    .gh-report .likelihood {
+      text-align: right;
+    }
+  }
+  .font-bold {
+    font-weight: bold;
+  }
+  .today {
+    padding-top: 10px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 1100px) {
+    .desktop-only {
+      font-size: 90%;
+    }
+  }
+  @media (max-width: 767px) {
+    .gh-report {
+      display: block;
+    }
+    .desktop-only {
+      display: none;
+    }
+    .gh-report div[data-label]:before {
+      content: attr(data-label);
+      font-size: .8em;
+      opacity: .8;
+      display: block;
+    }
+    .gh-report div {
+      margin-bottom: 12px;
+    }
+    .gh-report .location-name {
+      font-size: 1.7em;
+      font-weight: bold;
+    }
+    .gh-report .likelihood {
+      margin-bottom: 40px;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    .gh-report .likelihood:before {
+      font-size: .53em!important;
+      font-weight: normal;
+    }
+  }
+  .opaque {
+    opacity: .5;
+  }
+
+  .embed-builder .grid {
+    display: grid;
+    gap: 4px 12px;
+    grid-template-columns: 1fr 1fr;
+    justify-content: flex-start;
+    text-align: left;
+    margin: 0 auto;
+    width: 60%;
+  }
+  .embed-builder .grid.grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+    
+  }
+  .embed-builder input[type="submit"] {
+    margin-top: 40px;
+  }
+  @media (max-width: 1110px) {
+    .embed-builder .grid {
+      width: 90%;
+    }
+  }
+  @media (max-width: 767px) {
+    .embed-builder .grid,
+    .embed-builder .grid.grid-3 {
+      width: 100%;
+      grid-template-columns: 1fr;
+    }
+  }
+  .embed-error {
+    font-size: .7em;
+    font-style: italic;
+    color: #1c701c;
+    font-weight: 100;
+  }
+  .embed-code-text {
+    font-size: 16px;
+    margin-top: 20px;
+  }
+  .embed-code {
+    color: #1c701c;
+    padding: 10px;
+    background: #fff;
+    margin-bottom: 15px;
+  }
+  code {
+    background: #fff;
+  }
+  .gh-spacer {
+    height: 30px;
+  }
