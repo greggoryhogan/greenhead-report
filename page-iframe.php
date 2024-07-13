@@ -8,23 +8,32 @@
 if(isset($_GET['embed-url'])) {
   $url = sanitize_url($_GET['embed-url']);
   if($url != '') {
-    $path = 'unknown';
-    if(isset($_GET['embed-path'])) {
-      $path = rtrim(sanitize_text_field($_GET['embed-path']), '/');;
+    $us = array(
+      trailingslashit( get_bloginfo('url') ),
+      rtrim(trailingslashit( get_bloginfo('url') ), '/'),
+      get_bloginfo('url')
+    );
+    if(!in_array($url, $us)) {
+      $path = 'unknown';
+      if(isset($_GET['embed-path'])) {
+        $path = rtrim(sanitize_text_field($_GET['embed-path']), '/');
+      }
+      $post_id = get_the_ID();
+      $history = get_post_meta($post_id,'embed_locations',true);
+      if(!is_array($history)) {
+        $history = array();
+      }
+      if(!isset($history[$url])) {
+        $history[$url] = array();
+        $message = 'Embed data: Url: '.$url.'<br>Path: '.$path;
+        wp_mail('hello@mynameisgregg.com','New Greenhead Report embed location', $message);
+      }
+      if(!isset($history[$url][$path])) {
+        $history[$url][$path] = 0;
+      }
+      $history[$url][$path] = $history[$url][$path] + 1;
+      update_post_meta($post_id,'embed_locations',$history);
     }
-    $post_id = get_the_ID();
-    $history = get_post_meta($post_id,'embed_locations',true);
-    if(!is_array($history)) {
-      $history = array();
-    }
-    if(!isset($history[$url])) {
-      $history[$url] = array();
-    }
-    if(!isset($history[$url][$path])) {
-      $history[$url][$path] = 0;
-    }
-    $history[$url][$path] = $history[$url][$path] + 1;
-    update_post_meta($post_id,'embed_locations',$history);
   }
 } ?>
 </head>

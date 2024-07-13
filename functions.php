@@ -261,7 +261,7 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true) {
         $total_reports = 0;
         $average = 'N/A';
         $reported = false;
-        $last_reported_time = 'N/A';
+        $last_reported_time = '5+ days ago';
     }
     
     if($reported === false) {
@@ -462,5 +462,8 @@ function embed_display_locations_callback( $post ) {
         echo '<p>No embeds captured</p>';
     }
 }
-
+function wpse27856_set_content_type(){
+    return "text/html";
+}
+add_filter( 'wp_mail_content_type','wpse27856_set_content_type' );
 ?>
