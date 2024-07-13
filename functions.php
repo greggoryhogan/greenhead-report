@@ -430,4 +430,37 @@ function footer_text_line_1() {
 function footer_text_line_2() {
     echo '<p class="copy" style="margin-top: 10px;">Have a question, comment or beach suggestion? Email <a href="mailto:hello@mynameisgregg.com" title="Email us">hello@mynameisgregg.com</a>.';
 }
+
+function gh_meta_boxes() {
+    $page_by_path = get_page_by_path('iframe');
+    if($page_by_path !== null) {
+        $post_id = $_GET['post'] ? $_GET['post'] : $_POST['post_ID'] ;
+        if ($post_id == $page_by_path->ID){
+            add_meta_box( 'gh-embed-locations', __( 'Embed locations', 'textdomain' ), 'embed_display_locations_callback', 'page' );
+        }
+    }
+}
+add_action('add_meta_boxes','gh_meta_boxes');
+
+function embed_display_locations_callback( $post ) {
+	$history = get_post_meta($post->ID,'embed_locations',true);
+    if(is_array($history)) {
+        echo '<table style="text-align: left; width: 100%;" cellpadding="5"><tr><th>Location</th><th>Path</th><th>Count</th></tr>';
+        foreach($history as $url => $data) {
+            $urlshown = false;
+            foreach($data as $path => $count) {
+                echo '<tr><td>';
+                if(!$urlshown) {
+                    echo '<a href="'.$url.'" target="_blank">'.$url.'</a>';
+                    $urlshown = true;
+                }
+                echo '</td><td>'.$path.'</td><td>'.$count.'</td></tr>';
+            }
+        }
+        echo '</table>';
+    } else {
+        echo '<p>No embeds captured</p>';
+    }
+}
+
 ?>
