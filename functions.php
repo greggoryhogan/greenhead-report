@@ -1,5 +1,6 @@
 <?php
 add_theme_support('title-tag');
+add_filter( 'auto_plugin_update_send_email', '__return_false' );
 add_action( 'wp_enqueue_scripts', 'greenhead_scripts' );
 function greenhead_scripts() {
     $version = wp_get_theme()->get('Version');
@@ -168,7 +169,7 @@ function get_greenhead_reports_bk() {
     wp_die();
 }
 
-function get_green_location_lineitem($location, $name, $show_asterisk = true) {
+function get_green_location_lineitem($location, $name, $show_asterisk = true, $show_details = true) {
 	// General search criteria
     $search_criteria = array();
 
@@ -197,6 +198,7 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true) {
     }
     $severity = 0;
     $found_outlier = false;
+    $details = array();
     if($totalentries > 0) {
         foreach ($entries as $entry) {
             //echo $entry[1];
@@ -219,6 +221,10 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true) {
             }
             
             $severity += $entry[6];
+            $details[] = array(
+                'date_created' => strtotime($entry['date_created']),
+                'severity' => $entry[6],
+            );
         }
         //echo $severity;
         if($yes >= $no) {
@@ -236,23 +242,8 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true) {
             $average = round($severity / $totalentries);
         }
         
-        switch ($average) {
-            case 0:
-                $avg = 'Not a fly in sight';
-                break;
-            case 1:
-                $avg = 'Not bad at all';
-                break;
-            case 2:
-                $avg = 'A little annoying';
-                break;
-            case 3:
-               $avg = 'I debated leaving';
-                break;
-            case 4:
-                $avg = 'HOLY CRAP';
-        }
-
+        $avg = get_average($average);
+        
         $average = $average .'/4, '.$avg;
 
         $total_reports = $totalentries;
@@ -262,6 +253,7 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true) {
         $average = 'N/A';
         $reported = false;
         $last_reported_time = '5+ days ago';
+        $likelihood = 'No';
     }
     
     if($reported === false) {
@@ -283,18 +275,58 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true) {
     }
     
     
-    
-            
-    $response = '<div data-labelss="Location" class="location-name">'.$name.'</div>';
+    $detail_count = 1;
+    if(!empty($details)) {
+        $detail_count = count($details);
+    }
+    $response = '<div data-labelss="Location" class="location-name">'.$name;
+        if($show_details) {
+            if($detail_count > 1) {
+                $response .= ' <span class="toggle-gh-details">+</span>';
+            }
+        }
+    $response .= '</div>';
     $response .= '<div data-label="Last reported" class="last-reported">'.$last_reported_time.'</div>';
     $response .= '<div data-label="Reports" class="total-reports">'.$total_reports.'</div>';
     $response .= '<div data-label="Severity" class="avg">'.$average.'</div>';
     $response .= '<div data-label="In season?" class="likelihood">'.$likelihood.'</div>';
     
+    if($show_details) {
+        if($detail_count > 1) {
+            $response .= '<div class="gh-details hide-details">';
+                $response .= '<div class="gh-report">';
+                    foreach($details as $detail) {
+                        $last_reported_time = sprintf('%s ago', human_time_diff($detail['date_created'], $current_time));
+                        $response .= '<div></div><div>'.$last_reported_time.'</div><div></div><div>'.get_average($detail['severity']).'</div><div></div>';
+                    }
+                $response .= '</div>';
+            $response .= '</div>';
+        }
+    }
     
     
     
     return array('response' => $response, 'outlier' => $found_outlier);
+}
+
+function get_average($average) {
+    switch ($average) {
+        case 0:
+            $avg = 'Not a fly in sight';
+            break;
+        case 1:
+            $avg = 'Not bad at all';
+            break;
+        case 2:
+            $avg = 'A little annoying';
+            break;
+        case 3:
+            $avg = 'I debated leaving';
+            break;
+        case 4:
+            $avg = 'HOLY CRAP';
+    }
+    return $avg;
 }
 
 function get_greenhead_location_options() {
@@ -303,9 +335,11 @@ function get_greenhead_location_options() {
         2 => 'Plum Island (Refuge)',
         3 => 'Salisbury (Line)',
         6 => 'Salisbury (Reservation)',
-        5 => 'Crane Beach Ipswich',
+        5 => 'Crane Beach, Ipswich',
         4 => 'Hampton Beach',
-        7 => 'Camp Ellis, Maine'
+        7 => 'Camp Ellis, Maine',
+        8 => 'Sandy Neck, Barnstable',
+        9 => 'Nauset Beach, Orleans'
     );
 }
 function get_greenhead_reports() {
@@ -325,7 +359,7 @@ function get_greenhead_reports() {
         }
     }
     $report .= '</div>';
-    $report .= '<div style="margin-top: 40px; font-size: .7em; text-align: left;">Report count is a total of the last 5 days, severity is an average of those reports.</div>';
+    $report .= '<div style="margin-top: 40px; font-size: .7em; text-align: left;">Report count is a total of the last 5 days, severity is an average of those reports. <span class="mobile-only">Some details are only visible on desktop — try switching devices.</div>';
     if($found_outlier) {
         $report .= '<div style="margin-top: 10px; font-size: .7em; text-align: left;"><sup>*</sup>Based on the time of year, rather than reported data.</div>';
     }
@@ -414,8 +448,8 @@ function build_embed_code() {
     }
     $html = '<iframe id="greenhead-report" class="'.$size.'" src="'.trailingslashit(get_bloginfo('url')).'iframe/?location='.urlencode(implode(',',$locations)).'&size='.$size.'" width="'.$width.'" height="'.$height.'" style="border: none;"></iframe>'; //&fields='.urlencode(implode(',',$fields)).'
     $embed = '<script src="https://greenheadreport.com/embed.js?ver=1.0" data-locations="'.implode(',',$locations).'" data-size="'.$size.'"></script><div id="greenhead-report"></div>';
-    $message = 'Code generated! Locations: '.implode(', ', $locations).'. Size: '.$size;
-    wp_mail('hello@mynameisgregg.com','Greenhead code generated', $message);
+    //$message = 'Code generated! Locations: '.implode(', ', $locations).'. Size: '.$size;
+    //wp_mail('hello@mynameisgregg.com','Greenhead code generated', $message);
     wp_send_json( array(
         'preview' => $html,
         'html' => '<div><p class="embed-code-text">Embed code:</p><div class="embed-code"><code>'.htmlspecialchars($embed).'</code></div><button id="copy-embed-code" class="btn">Copy embed code</button></div>'

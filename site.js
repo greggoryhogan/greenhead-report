@@ -82,6 +82,17 @@
             },3000);
         });
 
+        $(document).on('click','.toggle-gh-details',function() {
+            if ($(this).text() == '+') {
+                $(this).text("-");
+            } else {
+                $(this).text("+");
+            }
+            $(this).closest('.location-name') // find the wrapping div
+           .nextAll('.gh-details').first() // get the next .gh-details
+           .toggleClass('hide-details');
+        });
+
     });
 
     $(document).bind('gform_post_render', function(){

@@ -79,7 +79,7 @@ if(isset($_GET['embed-url'])) {
             if($size == 'large_card') {
               echo get_report_columns();
             }
-            $response = get_green_location_lineitem($location, $default_locations[$location], false);
+            $response = get_green_location_lineitem($location, $default_locations[$location], false, false);
             echo $response['response'];
             if(!$found_outlier) {
               $found_outlier = $response['outlier'];

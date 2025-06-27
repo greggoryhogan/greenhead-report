@@ -5,7 +5,7 @@ Author URI: https://mynameisgregg.com
 Description: Henry - The ever evolving Wordpress theme.
 License: GNU General Public License version 3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Version: 7.0.4
+Version: 7.0.7
 */
 html,body {
     padding: 0;
@@ -48,8 +48,16 @@ ul, li {
     padding: 0;
     list-style: none;
 }
-span.gfield_required {
+span.gfield_required,
+.gform_required_legend {
     display: none!important;
+}
+.gform_page fieldset {
+  border: none;
+}
+.gform_page fieldset legend {
+  width: 100%;
+  text-align: center;
 }
 #gform_wrapper_1,
 #gform_confirmation_message_1 {
@@ -59,7 +67,7 @@ span.gfield_required {
 #gform_1 ul {
     margin-top: 20px;
 }
-#gform_1 ul.gfield_radio {
+#gform_1 .ginput_container_radio .gfield_radio {
     margin: 1.5rem 0;
     box-sizing: border-box;
     font-size: 0;
@@ -287,8 +295,30 @@ span.gfield_required {
     margin-top: 100px;
     font-size: 16px;
   }
-  
-  @media (min-width: 768px) {
+  .toggle-gh-details {
+    display: inline-block;
+    cursor: pointer;
+    aspect-ratio: 1;
+    color: #1c701c;
+    background: #fff;
+    border-radius: 50%;
+    padding: 3px;
+    font-size: 14px;
+    width: 15px;
+    line-height: 15px;
+    text-align: center;
+    align-self: end;
+    margin-bottom: 3px;
+    margin-right: 10px;
+  }
+  .toggle-gh-details:hover {
+    background: #1c701c;
+    color: #fff;
+  }
+  .gh-report .gh-details {
+    font-size: 16px;
+  }
+  @media (min-width: 860px) {
     .gh-report {
       display: grid;
       grid-template-columns: 35fr 18fr 8fr 35fr 15fr;
@@ -297,6 +327,22 @@ span.gfield_required {
     }
     .gh-report .likelihood {
       text-align: right;
+    }
+    .gh-report .gh-details {
+      grid-column: 1/6;
+      border-top: 1px solid #fff;
+      padding-top: 7px;
+      padding-bottom: 15px;
+    }
+    .gh-report .gh-details.hide-details {
+      border-top: none;
+      padding-top: 0;
+      padding-bottom: 0;
+      display: none;
+    }
+    .gh-report .location-name {
+      display: flex;
+      justify-content: space-between;
     }
   }
   .font-bold {
@@ -311,12 +357,20 @@ span.gfield_required {
       font-size: 90%;
     }
   }
-  @media (max-width: 767px) {
+  .mobile-only {
+    display: none;
+  }
+  @media (max-width: 859px) {
     .gh-report {
       display: block;
     }
+    .gh-report .gh-details,
+    .toggle-gh-details, 
     .desktop-only {
       display: none;
+    }
+    .mobile-only {
+      display: inline-block;
     }
     .gh-report div[data-label]:before {
       content: attr(data-label);
