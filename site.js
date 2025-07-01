@@ -82,11 +82,12 @@
             },3000);
         });
 
-        $(document).on('click','.toggle-gh-details',function() {
-            if ($(this).text() == '+') {
-                $(this).text("-");
+        $(document).on('click','.toggle-gh-details',function(e) {
+            e.preventDefault();
+            if ($(this).find('.desktop-only').text() == '+') {
+                $(this).html('<span class="desktop-only">-</span><span class="mobile-only">Hide Report Details</span>');
             } else {
-                $(this).text("+");
+                $(this).html('<span class="desktop-only">+</span><span class="mobile-only">Show Report Details</span>');
             }
             $(this).closest('.location-name') // find the wrapping div
            .nextAll('.gh-details').first() // get the next .gh-details

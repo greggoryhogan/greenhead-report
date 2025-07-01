@@ -282,7 +282,7 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true, $s
     $response = '<div data-labelss="Location" class="location-name">'.$name;
         if($show_details) {
             if($detail_count > 1) {
-                $response .= ' <span class="toggle-gh-details">+</span>';
+                $response .= ' <span class="toggle-gh-details"><span class="desktop-only">+</span><span class="mobile-only">Show Report Details</span></span>';
             }
         }
     $response .= '</div>';
@@ -294,10 +294,11 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true, $s
     if($show_details) {
         if($detail_count > 1) {
             $response .= '<div class="gh-details hide-details">';
+                $response .= '<div class="mobile-only reporting-details-heading">Report Details:</div>';
                 $response .= '<div class="gh-report">';
                     foreach($details as $detail) {
                         $last_reported_time = sprintf('%s ago', human_time_diff($detail['date_created'], $current_time));
-                        $response .= '<div></div><div>'.$last_reported_time.'</div><div></div><div>'.get_average($detail['severity']).'</div><div></div>';
+                        $response .= '<div class="desktop-only"></div><div class="detail-report-time">'.$last_reported_time.'<span class="mobile-only">: </span></div><div class="desktop-only"></div><div class="detail-report-average">'.get_average($detail['severity']).'</div><div class="desktop-only"></div>';
                     }
                 $response .= '</div>';
             $response .= '</div>';
@@ -359,7 +360,7 @@ function get_greenhead_reports() {
         }
     }
     $report .= '</div>';
-    $report .= '<div style="margin-top: 40px; font-size: .7em; text-align: left;">Report count is a total of the last 5 days, severity is an average of those reports. <span class="mobile-only">Some details are only visible on desktop — try switching devices.</div>';
+    $report .= '<div style="margin-top: 40px; font-size: .7em; text-align: left;">Report count is a total of the last 5 days, severity is an average of those reports.</div>';
     if($found_outlier) {
         $report .= '<div style="margin-top: 10px; font-size: .7em; text-align: left;"><sup>*</sup>Based on the time of year, rather than reported data.</div>';
     }

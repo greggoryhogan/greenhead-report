@@ -5,7 +5,7 @@ Author URI: https://mynameisgregg.com
 Description: Henry - The ever evolving Wordpress theme.
 License: GNU General Public License version 3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Version: 7.0.7
+Version: 7.0.8
 */
 html,body {
     padding: 0;
@@ -318,6 +318,12 @@ span.gfield_required,
   .gh-report .gh-details {
     font-size: 16px;
   }
+  .gh-report .gh-details.hide-details {
+    border-top: none;
+    padding-top: 0;
+    padding-bottom: 0;
+    display: none;
+  }
   @media (min-width: 860px) {
     .gh-report {
       display: grid;
@@ -334,12 +340,7 @@ span.gfield_required,
       padding-top: 7px;
       padding-bottom: 15px;
     }
-    .gh-report .gh-details.hide-details {
-      border-top: none;
-      padding-top: 0;
-      padding-bottom: 0;
-      display: none;
-    }
+    
     .gh-report .location-name {
       display: flex;
       justify-content: space-between;
@@ -364,8 +365,6 @@ span.gfield_required,
     .gh-report {
       display: block;
     }
-    .gh-report .gh-details,
-    .toggle-gh-details, 
     .desktop-only {
       display: none;
     }
@@ -384,6 +383,17 @@ span.gfield_required,
     .gh-report .location-name {
       font-size: 1.7em;
       font-weight: bold;
+      display: flex;
+      flex-direction: column;
+    }
+    .toggle-gh-details {
+      aspect-ratio: auto;
+      width: auto;
+      height: auto;
+      align-self: center;
+      border-radius: 4px;
+      margin-top: 10px;
+      padding: 5px 10px;
     }
     .gh-report .likelihood {
       margin-bottom: 40px;
@@ -393,6 +403,23 @@ span.gfield_required,
     .gh-report .likelihood:before {
       font-size: .53em!important;
       font-weight: normal;
+    }
+    .gh-details .gh-report {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .detail-report-time {
+      text-align: right;
+      padding-right: 5px;
+    }
+    .detail-report-average {
+      text-align: left;
+    }
+    .reporting-details-heading {
+      font-weight: bold;
+    }
+    .gh-report .gh-details {
+      font-size: 17px;
     }
   }
   .opaque {

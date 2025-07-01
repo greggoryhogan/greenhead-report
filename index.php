@@ -12,8 +12,8 @@ while ( have_posts() ){
     echo '<div class="gh-spacer"></div>';
     
     echo '<p>Thank you to everyone who continues to contribute to the report.<br>';
-    echo "2024 brought in 500+ reports; this tiny project's most successful year.<br>";
-    echo 'If you have suggestions for improving the report for 2025 and beyond, don&rsquo;t hesitate to <a href="mailto:hello@mynameisgregg.com">reach out</a>!</p>';
+    echo "2024 brought in 500+ reports; this tiny project's most successful year. Please keep sharing!<br>";
+    echo 'If you have suggestions for improving the report for 2025 and beyond, don&rsquo;t hesitate to <a href="mailto:hello@mynameisgregg.com">reach out</a>.</p>';
 
     echo '<p>If you&rsquo;re visiting the beach during greenhead season, try these tips to lessen your exposure:</p>';
     echo '<ul>';
