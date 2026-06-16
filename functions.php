@@ -299,7 +299,7 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true, $s
     if(!empty($details)) {
         $detail_count = count($details);
     }
-    $response = '<div data-labelss="Location" class="location-name">'.$name;
+    $response = '<div data-labelss="Location" class="location-name"><a href="'.get_greenhead_location_url($location).'" title="View '.$name.'">'.$name .'</a>';;
         if($show_details) {
             if($detail_count > 1) {
                 $response .= ' <span class="toggle-gh-details"><span class="desktop-only">+</span><span class="mobile-only">Show Report Details</span></span>';
@@ -364,6 +364,45 @@ function get_greenhead_location_options() {
         9 => 'Nauset Beach, Orleans',
         10 => 'Wingaersheek Beach, Gloucester'
     );
+}
+
+function get_greenhead_location_url($location) {
+    switch ($location) {
+        case 1:
+            return 'https://greenheadreport.com/location/plum-island-point/';
+            break;
+        case 2:
+            return 'https://greenheadreport.com/location/plum-island-refuge/';
+            break;
+        case 3:
+            return 'https://greenheadreport.com/location/salisbury-line/';
+            break;
+        case 4:
+            return 'https://greenheadreport.com/location/hampton-beach/';
+            break;
+        case 5:
+            return 'https://greenheadreport.com/location/crane-beach-ipswich/';
+            break;
+        case 6:
+            return 'https://greenheadreport.com/location/salisbury-reservation/';
+            break;
+        case 7:
+            return 'https://greenheadreport.com/location/camp-ellis-maine/';
+            break;
+        case 8:
+            return 'https://greenheadreport.com/location/sandy-neck-barnstable/';
+            break;
+        case 9:
+            return 'https://greenheadreport.com/location/nauset-beach-orleans/';
+            break;
+        case 10:
+            return 'https://greenheadreport.com/location/wingaersheek-beach-gloucester/';
+            break;
+        default:
+            return 'https://greenheadreport.com/';
+            break;
+
+    }
 }
 function get_greenhead_reports() {
     date_default_timezone_set(wp_timezone_string());
