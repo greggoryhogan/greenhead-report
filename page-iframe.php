@@ -61,10 +61,10 @@ if(isset($_GET['embed-url'])) {
       if($size != 'small_card') {
         echo '<div class="embed-locations">';
       }
-      if(!isset($_GET['location'])) {
+      if(!isset($_GET['embed-location'])) {
         echo 'An error occurred, no locations specified.';
       } else {
-        $locations = explode(',',$_GET['location']);
+        $locations = explode(',',$_GET['embed-location']);
         $default_locations = get_greenhead_location_options();
         $found_outlier = false;
         foreach($locations as $location) {
