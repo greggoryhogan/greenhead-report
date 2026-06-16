@@ -19,6 +19,19 @@ function greenhead_scripts() {
         wp_enqueue_script('gh-slick');
         wp_enqueue_script('gh-embed');
     } 
+
+    if(is_singular('location')) {
+        $location =  get_post_meta(get_the_ID(), '_location_id', true); 
+        $location_details = greenhead_severity_chart($location);
+        wp_enqueue_script('charts', get_stylesheet_directory_uri().'/chart.umd.min.js', array(), '4.5.1', true);
+        wp_enqueue_script('gh-location', get_stylesheet_directory_uri().'/location.js', array('charts'), $version, true);
+        wp_localize_script( 'gh-location', 'gh_location', array(
+            'location' => $location,
+            'labels' => $location_details['labels'],
+            'datasets' => $location_details['datasets'],
+        ));
+         
+    }
 }
 
 //add_action( 'gform_after_submission_1', 'record_user_submission', 10, 2 );
@@ -169,12 +182,19 @@ function get_greenhead_reports_bk() {
     wp_die();
 }
 
+//add_filter('gh_line_item_start_data', 'gh_all_year_report');
+function gh_all_year_report($time) {
+    if(is_singular('location')) {
+        $time = date('05-01-Y');
+    }
+    return $time;
+}
 function get_green_location_lineitem($location, $name, $show_asterisk = true, $show_details = true) {
 	// General search criteria
     $search_criteria = array();
 
     // start / end date set to yesterday (cron runs at midnight, entries would be from prev day)
-    $start_date = date('Y-m-d', strtotime('-5 days'));
+    $start_date = apply_filters('gh_line_item_start_data', date('Y-m-d', strtotime('-5 days')));
     $end_date = date('Y-m-d',strtotime('1 day'));
 
     //Set gravity forms search range
@@ -298,6 +318,7 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true, $s
                 $response .= '<div class="gh-report">';
                     foreach($details as $detail) {
                         $last_reported_time = sprintf('%s ago', human_time_diff($detail['date_created'], $current_time));
+                        //$report_time = date('g:i a',$detail['date_created']); //, '.$report_time.'
                         $response .= '<div class="desktop-only"></div><div class="detail-report-time">'.$last_reported_time.'<span class="mobile-only">: </span></div><div class="desktop-only"></div><div class="detail-report-average">'.get_average($detail['severity']).'</div><div class="desktop-only"></div>';
                     }
                 $response .= '</div>';
@@ -340,7 +361,8 @@ function get_greenhead_location_options() {
         4 => 'Hampton Beach',
         7 => 'Camp Ellis, Maine',
         8 => 'Sandy Neck, Barnstable',
-        9 => 'Nauset Beach, Orleans'
+        9 => 'Nauset Beach, Orleans',
+        10 => 'Wingaersheek Beach, Gloucester'
     );
 }
 function get_greenhead_reports() {
@@ -501,4 +523,262 @@ function wpse27856_set_content_type(){
     return "text/html";
 }
 add_filter( 'wp_mail_content_type','wpse27856_set_content_type' );
+
+function gh_register_cpt_and_taxonomies() {
+
+	/**
+	 * Locations
+	 */
+	$args = array(
+		"label" => __( "All Locations", "" ),
+		"labels" => array(
+			"name" => __( "Locations", "" ),
+			"singular_name" => __( "Location", "" ),
+		),
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"rest_base" => "",
+		"has_archive" => false,
+		"show_in_menu" => true,
+		'show_in_rest' => true,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"rewrite" => array( "slug" => 'location', "with_front" => false ),
+		"query_var" => true,
+		"supports" => array( "title", "custom-fields", "thumbnail", "author", "page-attributes", "post-formats" ),
+		"taxonomies" => array( ),
+		'menu_icon' => 'dashicons-marker',
+	);
+
+	register_post_type( "location", $args );
+}
+add_action( 'init', 'gh_register_cpt_and_taxonomies' );
+
+add_action('add_meta_boxes', function () {
+    add_meta_box(
+        'location_id_metabox',
+        'Location ID',
+        'render_location_id_metabox',
+        'location', // Change to your CPT
+        'side',
+        'default'
+    );
+});
+
+function render_location_id_metabox($post) {
+    wp_nonce_field('save_location_id_metabox', 'location_id_metabox_nonce');
+
+    $location_id = get_post_meta($post->ID, '_location_id', true);
+    ?>
+    <p>
+        <label for="location_id">GF Location ID</label>
+        <input
+            type="number"
+            id="location_id"
+            name="location_id"
+            value="<?php echo esc_attr($location_id); ?>"
+            min="0"
+            step="1"
+            style="width:100%;"
+        />
+    </p>
+    <?php
+}
+
+add_action('save_post', function ($post_id) {
+
+    if (
+        !isset($_POST['location_id_metabox_nonce']) ||
+        !wp_verify_nonce($_POST['location_id_metabox_nonce'], 'save_location_id_metabox')
+    ) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['location_id']) && $_POST['location_id'] !== '') {
+        update_post_meta(
+            $post_id,
+            '_location_id',
+            absint($_POST['location_id'])
+        );
+    } else {
+        delete_post_meta($post_id, '_location_id');
+    }
+});
+
+
+function greenhead_severity_chart($location) {
+	if (!class_exists('GFAPI')) {
+		return '';
+	}
+
+	$atts = array(
+		'start'       => '06-01',
+		'end'         => '08-15',
+		'rolling'     => 7,
+	);
+
+	$form_id     = 1;
+	$location_id = absint($location);
+	$rolling     = absint($atts['rolling']);
+
+	if (!$form_id || !$location_id) {
+		return '';
+	}
+
+	// Gravity Forms field IDs from your export:
+	// Location = 5, Severity = 6
+	$location_field_id = '5';
+	$severity_field_id = '6';
+
+	$search_criteria = [
+		'status'        => 'active',
+		'field_filters' => [
+			[
+				'key'   => $location_field_id,
+				'value' => (string) $location_id,
+			],
+		],
+	];
+
+	$paging = [
+		'offset'    => 0,
+		'page_size' => 5000,
+	];
+
+	$entries = GFAPI::get_entries($form_id, $search_criteria, null, $paging);
+
+	if (is_wp_error($entries) || empty($entries)) {
+		return '<p>No reports found for this location yet.</p>';
+	}
+
+	$daily = [];
+
+	foreach ($entries as $entry) {
+		if (empty($entry['date_created']) || !isset($entry[$severity_field_id])) {
+			continue;
+		}
+
+		$timestamp = strtotime($entry['date_created']);
+        $year = date('Y', $timestamp);
+
+        if ($year < 2023) {
+            continue;
+        }
+		$year      = date('Y', $timestamp);
+		$month_day = date('m-d', $timestamp);
+
+		if ($month_day < $atts['start'] || $month_day > $atts['end']) {
+			continue;
+		}
+
+		$severity = is_numeric($entry[$severity_field_id]) ? (float) $entry[$severity_field_id] : null;
+
+		if ($severity === null) {
+			continue;
+		}
+
+		if (!isset($daily[$year][$month_day])) {
+			$daily[$year][$month_day] = [];
+		}
+
+		$daily[$year][$month_day][] = $severity;
+	}
+
+	if (empty($daily)) {
+		return '<p>No reports found for this date range.</p>';
+	}
+
+	// Average each day.
+	$averages = [];
+
+	foreach ($daily as $year => $days) {
+		foreach ($days as $month_day => $values) {
+			$averages[$year][$month_day] = array_sum($values) / count($values);
+		}
+	}
+
+	ksort($averages);
+
+	$labels = [];
+	$start  = strtotime('2024-' . $atts['start']);
+	$end    = strtotime('2024-' . $atts['end']);
+
+	for ($time = $start; $time <= $end; $time = strtotime('+1 day', $time)) {
+		$month_day = date('m-d', $time);
+		$labels[] = [
+			'key'   => $month_day,
+			'label' => date('M j', $time),
+		];
+	}
+
+	$datasets = [];
+
+	foreach ($averages as $year => $days) {
+		$data = [];
+
+		foreach ($labels as $label) {
+			$month_day = $label['key'];
+			$data[] = $days[$month_day] ?? null;
+		}
+
+		if ($rolling > 1) {
+			$data = greenhead_rolling_average($data, $rolling);
+		}
+
+		$datasets[] = [
+            'label'       => $year,
+            'data'        => $data,
+            'tension'     => 0.25,
+            'spanGaps'    => true,
+            'pointRadius'      => 0,
+            'pointHoverRadius' => 0,
+            'hitRadius'        => 8,
+            'borderWidth'      => 2,
+        ];
+	}
+    
+    $chart_labels = array_map(function($label) {
+        return $label['label'];
+    }, $labels);
+
+	return array(
+        'labels' => $chart_labels,
+        'datasets' => $datasets
+    );
+}
+
+function greenhead_rolling_average($data, $window = 7) {
+	$output = [];
+	$count  = count($data);
+
+	for ($i = 0; $i < $count; $i++) {
+		$values = [];
+
+		$start = max(0, $i - floor($window / 2));
+		$end   = min($count - 1, $i + floor($window / 2));
+
+		for ($j = $start; $j <= $end; $j++) {
+			if ($data[$j] !== null) {
+				$values[] = $data[$j];
+			}
+		}
+
+		$output[] = !empty($values)
+			? round(array_sum($values) / count($values), 2)
+			: null;
+	}
+
+	return $output;
+}
 ?>

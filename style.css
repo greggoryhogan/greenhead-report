@@ -5,7 +5,7 @@ Author URI: https://mynameisgregg.com
 Description: Henry - The ever evolving Wordpress theme.
 License: GNU General Public License version 3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Version: 7.0.8
+Version: 8.0.1
 */
 html,body {
     padding: 0;
@@ -481,3 +481,79 @@ span.gfield_required,
   .gh-spacer {
     height: 30px;
   }
+
+  .greenhead-severity-chart-wrap {
+		position: relative;
+		width: 100%;
+		height: 420px;
+    max-width: 100%;
+    background: #fff;
+    border-radius: .75rem;
+    padding: .5rem 1rem 1rem;
+    box-sizing: border-box;
+	}
+
+  
+
+.greenhead-severity-chart-wrap canvas {
+	display: block;
+	width: 100% !important;
+	max-width: 100% !important;
+	height: 100% !important;
+}
+.single-report-data {
+  display: flex;
+  gap: 1rem;
+  background: #fff;
+  border-radius: .75rem;
+  color: #1c701c;
+  padding: 1rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  text-align: left;
+}
+.single-report-data .location-name,
+.single-report-data .gh-details {
+  display: none;
+}
+.single-report-data .likelihood:before {
+  content: 'In Season?: ';
+}
+.single-report-data .last-reported:before {
+  content: 'Last Reported: ';
+}
+.single-report-data .total-reports:before {
+  content: 'Reports: ';
+}
+.single-report-data .avg:before {
+  content: 'Average: ';
+}
+
+.single-report-data .gh-report {
+  grid-template-columns: 1fr 1fr;
+  margin: 1rem auto;
+  font-size: .85rem;
+  border-top: 1px solid #9dc183;
+  display: none;
+}
+@media (min-width: 768px) {
+  .single-report-data .gh-report {
+    padding: 1rem 20% 0;
+    text-align: center;
+  }
+  .single-report-data .detail-report-time:before {
+    content: 'Reported ';
+  }
+}
+.single-report-data .desktop-only {
+  display: none;
+}
+@media (max-width:768px) {
+  .single-report-data {
+    flex-direction: column;
+  }
+  
+  .single-report-data .detail-report-time {
+    text-align: left;
+  }
+}

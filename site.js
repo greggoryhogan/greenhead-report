@@ -1,16 +1,19 @@
 (function($) {
     jQuery(document).ready(function() {
-        var data = {
-            'action': 'get_greenhead_reports',
-        };
-        $.ajax({
-            url: greenhead.ajaxurl,
-            type: 'get',
-            data: data,
-            success: function(response){
-                $('#greenhead-reports-summary').html(response.reports);
-            }
-        }); 
+
+        if($('#greenhead-reports-summary').length) {
+            var data = {
+                'action': 'get_greenhead_reports',
+            };
+            $.ajax({
+                url: greenhead.ajaxurl,
+                type: 'get',
+                data: data,
+                success: function(response){
+                    $('#greenhead-reports-summary').html(response.reports);
+                }
+            }); 
+        }
 
         function resize_embed() {
             

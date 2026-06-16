@@ -17,6 +17,8 @@
             <div class="logo-container">
               <a href="<?php echo get_bloginfo('url'); ?>" title="Greenhead Report">
                   <img src="https://greenheadreport.com/wp-content/uploads/2022/06/head-min.png" class="greenheadlogo" title="A lil stupid greenhead" />
-                  <h1>Is it Greenhead Season?</h1>
+                  <?php if(!is_singular('location')) { ?>
+                    <h1>Is it Greenhead Season?</h1>
+                  <?php } ?>
               </a>
             </div>
