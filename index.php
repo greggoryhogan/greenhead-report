@@ -5,28 +5,32 @@ while ( have_posts() ){
 
     the_content();
 
-    echo '<h2 class="line"><span>The <div class="green">&nbsp;Greenhead </div> Report</span></h2>';
-    echo '<div id="greenhead-reports-summary"><div class="opaque today">Loading report...</div></div>';
+    if(is_home() || is_front_page()) {
+        echo '<h2 class="line"><span>The <div class="green">&nbsp;Greenhead </div> Report</span></h2>';
+        echo '<div id="greenhead-reports-summary"><div class="opaque today">Loading report...</div></div>';
 
-    echo '<div class="gh-spacer"></div>';
-    echo '<div class="gh-spacer"></div>';
-    
-    echo '<p>Thank you to everyone who continues to contribute to the report.<br>';
-    echo "2025 brought in 550+ reports; this tiny project's most successful year. Please keep sharing!<br>";
-    echo 'If you have suggestions for improving the report for 2026 and beyond, don&rsquo;t hesitate to <a href="mailto:hello@mynameisgregg.com">reach out</a>.</p>';
+        echo '<div class="gh-spacer"></div>';
+        echo '<div class="gh-spacer"></div>';
+        
+        echo '<p>Thank you to everyone who continues to contribute to the report.<br>';
+        echo "2025 brought in 550+ reports; this tiny project's most successful year. Please keep sharing!</p>";
+        echo '<p>For the 2027 season, I will be launching a new version of the website to accomodate the growing list of locations and for general usability improvements. <br>If you have suggestions for improving the report into 2027 and beyond, please fill out our <a href="https://greenheadreport.com/greenhead-report-2027/">website improvement form</a>.</p>';
 
-    echo '<p>If you&rsquo;re visiting the beach during greenhead season, try these tips to lessen your exposure:</p>';
-    echo '<ul>';
-    echo '<li style="list-style: disc inside;margin-bottom: 3px;">Greenheads are attracted to the ocean&rsquo;s salt, so dry off after swimming</li>';
-    echo '<li style="list-style: disc inside;margin-bottom: 3px;">Visit the beach on breezy days — wind makes it harder for them to fly</li>';
-    echo '<li style="list-style: disc inside;margin-bottom: 3px;">Choose light-colored clothing or wear long sleeves and pants when you can</li>';
-    echo '</ul>';
-    
+        echo '<p>If you&rsquo;re visiting the beach during greenhead season, try these tips to lessen your exposure:</p>';
+        echo '<ul>';
+        echo '<li style="list-style: disc inside;margin-bottom: 3px;">Greenheads are attracted to the ocean&rsquo;s salt, so dry off after swimming</li>';
+        echo '<li style="list-style: disc inside;margin-bottom: 3px;">Visit the beach on breezy days — wind makes it harder for them to fly</li>';
+        echo '<li style="list-style: disc inside;margin-bottom: 3px;">Choose light-colored clothing or wear long sleeves and pants when you can</li>';
+        echo '<li style="list-style: disc inside;margin-bottom: 3px;">Skin-So-Soft bath oil or Tanqueray gin can work as a repellent, <br>though the latter might just be an excuse to carry an extra nip of gin on you!</li>';
+        echo '</ul>';
+        
 
-    echo '<div class="gh-spacer"></div>';
-    echo '<h2 class="line"><span>Embed <div class="green">&nbsp;The Greenhead Report on your website!</div></span></h2>';
-    echo '<p>Select your location(s) and display settings to generate an embeddable code for your website.</p>';
-    echo greenhead_embed_builder();
-    echo '<div class="gh-spacer"></div>';
+        echo '<div class="gh-spacer"></div>';
+        echo '<div class="gh-spacer"></div>';
+        echo '<h2 class="line"><span>Embed <div class="green">&nbsp;The Greenhead Report on your website!</div></span></h2>';
+        echo '<p>Select your location(s) and display settings to generate an embeddable code for your website.</p>';
+        echo greenhead_embed_builder();
+        echo '<div class="gh-spacer"></div>';
+    }
 }
 get_footer(); ?>

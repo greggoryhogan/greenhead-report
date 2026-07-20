@@ -23,13 +23,15 @@ function greenhead_scripts() {
     if(is_singular('location')) {
         $location =  get_post_meta(get_the_ID(), '_location_id', true); 
         $location_details = greenhead_severity_chart($location);
-        wp_enqueue_script('charts', get_stylesheet_directory_uri().'/chart.umd.min.js', array(), '4.5.1', true);
-        wp_enqueue_script('gh-location', get_stylesheet_directory_uri().'/location.js', array('charts'), $version, true);
-        wp_localize_script( 'gh-location', 'gh_location', array(
-            'location' => $location,
-            'labels' => $location_details['labels'],
-            'datasets' => $location_details['datasets'],
-        ));
+        if(!empty($location_details)) {
+            wp_enqueue_script('charts', get_stylesheet_directory_uri().'/chart.umd.min.js', array(), '4.5.1', true);
+            wp_enqueue_script('gh-location', get_stylesheet_directory_uri().'/location.js', array('charts'), $version, true);
+            wp_localize_script( 'gh-location', 'gh_location', array(
+                'location' => $location,
+                'labels' => $location_details['labels'],
+                'datasets' => $location_details['datasets'],
+            ));
+        }
          
     }
 }
@@ -189,7 +191,7 @@ function gh_all_year_report($time) {
     }
     return $time;
 }
-function get_green_location_lineitem($location, $name, $show_asterisk = true, $show_details = true) {
+function get_green_location_lineitem($location, $name, $show_asterisk = true, $show_details = true, $link_to_page = true) {
 	// General search criteria
     $search_criteria = array();
 
@@ -299,7 +301,14 @@ function get_green_location_lineitem($location, $name, $show_asterisk = true, $s
     if(!empty($details)) {
         $detail_count = count($details);
     }
-    $response = '<div data-labelss="Location" class="location-name"><a href="'.get_greenhead_location_url($location).'" title="View '.$name.'">'.$name .'</a>';;
+    $response = '<div data-labelss="Location" class="location-name">';
+        if($link_to_page) {
+            $response .= '<a href="'.get_greenhead_location_url($location).'" title="View '.$name.'">';
+        }
+        $response .= $name;
+        if($link_to_page) {
+            $response .='</a>';
+        }
         if($show_details) {
             if($detail_count > 1) {
                 $response .= ' <span class="toggle-gh-details"><span class="desktop-only">+</span><span class="mobile-only">Show Report Details</span></span>';
@@ -353,16 +362,17 @@ function get_average($average) {
 
 function get_greenhead_location_options() {
     return array(
-        1 => 'Plum Island (Point)',
-        2 => 'Plum Island (Refuge)',
-        3 => 'Salisbury (Line)',
-        6 => 'Salisbury (Reservation)',
+        1 => 'Plum Island Point',
+        2 => 'Plum Island Refuge',
+        3 => 'Salisbury Line',
+        6 => 'Salisbury Reservation',
         5 => 'Crane Beach, Ipswich',
-        4 => 'Hampton Beach',
-        7 => 'Camp Ellis, Maine',
+        4 => 'Hampton Beach (NH)',
+        7 => 'Camp Ellis (ME)',
         8 => 'Sandy Neck, Barnstable',
         9 => 'Nauset Beach, Orleans',
-        10 => 'Wingaersheek Beach, Gloucester'
+        10 => 'Wingaersheek Beach, Gloucester',
+        11 => 'Pine Point Beach (ME)'
     );
 }
 
@@ -397,6 +407,9 @@ function get_greenhead_location_url($location) {
             break;
         case 10:
             return 'https://greenheadreport.com/location/wingaersheek-beach-gloucester/';
+            break;
+        case 11:
+            return 'https://greenheadreport.com/location/pine-point-beach-maine/';
             break;
         default:
             return 'https://greenheadreport.com/';
@@ -435,7 +448,7 @@ function get_greenhead_reports() {
 add_action("wp_ajax_get_greenhead_reports", "get_greenhead_reports");
 add_action("wp_ajax_nopriv_get_greenhead_reports", "get_greenhead_reports");
 
-function get_report_columns() {
+function get_report_columns($link_pages = true) {
     $report = '';
     $report .= '<div class="desktop-only font-bold">Location</div>';
     $report .= '<div class="desktop-only font-bold">Last reported</div>';
@@ -664,7 +677,7 @@ function greenhead_severity_chart($location) {
 	$atts = array(
 		'start'       => '06-01',
 		'end'         => '08-15',
-		'rolling'     => 7,
+		'rolling'     => 5,
 	);
 
 	$form_id     = 1;
@@ -672,7 +685,7 @@ function greenhead_severity_chart($location) {
 	$rolling     = absint($atts['rolling']);
 
 	if (!$form_id || !$location_id) {
-		return '';
+		return array();
 	}
 
 	// Gravity Forms field IDs from your export:
@@ -698,7 +711,7 @@ function greenhead_severity_chart($location) {
 	$entries = GFAPI::get_entries($form_id, $search_criteria, null, $paging);
 
 	if (is_wp_error($entries) || empty($entries)) {
-		return '<p>No reports found for this location yet.</p>';
+		return array();
 	}
 
 	$daily = [];
@@ -798,26 +811,46 @@ function greenhead_severity_chart($location) {
 }
 
 function greenhead_rolling_average($data, $window = 7) {
-	$output = [];
 	$count  = count($data);
+	$output = array_fill(0, $count, null);
 
-	for ($i = 0; $i < $count; $i++) {
+	$last_data_index = null;
+
+	foreach ($data as $index => $value) {
+		if ($value !== null) {
+			$last_data_index = $index;
+		}
+	}
+
+	if ($last_data_index === null) {
+		return $output;
+	}
+
+	for ($i = 0; $i <= $last_data_index; $i++) {
 		$values = [];
+		$start  = max(0, $i - $window + 1);
 
-		$start = max(0, $i - floor($window / 2));
-		$end   = min($count - 1, $i + floor($window / 2));
-
-		for ($j = $start; $j <= $end; $j++) {
+		for ($j = $start; $j <= $i; $j++) {
 			if ($data[$j] !== null) {
 				$values[] = $data[$j];
 			}
 		}
 
-		$output[] = !empty($values)
-			? round(array_sum($values) / count($values), 2)
-			: null;
+		if (!empty($values)) {
+			$output[$i] = round(
+				array_sum($values) / count($values),
+				2
+			);
+		}
 	}
 
 	return $output;
 }
+
+add_filter( 'gform_disable_css', function() {
+    if(is_page('greenhead-report-2027')) {
+        return false;
+    }
+    return true;
+} );
 ?>

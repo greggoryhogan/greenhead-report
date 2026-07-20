@@ -5,7 +5,7 @@ Author URI: https://mynameisgregg.com
 Description: Henry - The ever evolving Wordpress theme.
 License: GNU General Public License version 3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Version: 8.0.3
+Version: 8.0.5
 */
 html,body {
     padding: 0;
@@ -381,7 +381,7 @@ span.gfield_required,
       margin-bottom: 12px;
     }
     .gh-report .location-name {
-      font-size: 1.7em;
+      font-size: 1.2em;
       font-weight: bold;
       display: flex;
       flex-direction: column;
@@ -556,4 +556,14 @@ span.gfield_required,
   .single-report-data .detail-report-time {
     text-align: left;
   }
+}
+
+#gform_fields_3 {
+  text-align: left;
+}
+#gform_wrapper_3 .gform-footer {
+  justify-content: flex-end;
+}
+#gform_confirmation_message_3 {
+  margin-bottom: 140px;
 }
