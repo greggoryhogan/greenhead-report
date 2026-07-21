@@ -11,6 +11,7 @@ function greenhead_scripts() {
         wp_localize_script( 'site', 'greenhead', array(
             'ajaxurl' => admin_url('admin-ajax.php')
         ));
+        wp_enqueue_script('analytics', get_stylesheet_directory_uri().'/analytics.js', array(), $version, true);
     } else {
         wp_register_style('gh-slick',   get_stylesheet_directory_uri(). '/slick-1.8.1/slick/slick.css', null, '1.8.1');
         wp_register_script('gh-slick',  get_stylesheet_directory_uri(). '/slick-1.8.1/slick/slick.min.js', array('jquery'), '1.8.1', true);
@@ -372,6 +373,7 @@ function get_greenhead_location_options() {
         8 => 'Sandy Neck, Barnstable',
         9 => 'Nauset Beach, Orleans',
         10 => 'Wingaersheek Beach, Gloucester',
+        12 => 'Good Harbor Beach, Gloucester',
         11 => 'Pine Point Beach (ME)'
     );
 }
@@ -410,6 +412,9 @@ function get_greenhead_location_url($location) {
             break;
         case 11:
             return 'https://greenheadreport.com/location/pine-point-beach-maine/';
+            break;
+        case 12:
+            return 'https://greenheadreport.com/location/good-harbor-beach-gloucester/';
             break;
         default:
             return 'https://greenheadreport.com/';
