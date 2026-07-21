@@ -16,7 +16,7 @@
 			ad_personalization: 'denied',
 			functionality_storage: 'denied',
 			personalization_storage: 'denied',
-      'wait_for_update': 500
+      wait_for_update: 500
     });
 
     gtag('js', new Date());
